@@ -64,7 +64,7 @@ qsTestCases.forEach(function (testCase) {
 
 // test that the colon test cases can do the same
 qsColonTestCases.forEach(function (testCase) {
-  assert.deepEqual(testCase[2], qs.parse(testCase[0], ";", ":"));
+  assert.deepEqual(testCase[2], qs.parse(testCase[0], { separator : ";", eq : ":" }));
 });
 
 // test the weird objects, that they get parsed properly
@@ -78,8 +78,8 @@ f.q = qs.parse(f.q);
 assert.deepEqual(f, { a : "b", q : { x : "y", y : "z" } });
 
 // nested in colon
-var f = qs.parse("a:b;q:x%3Ay%3By%3Az", ";", ":");
-f.q = qs.parse(f.q, ";", ":");
+var f = qs.parse("a:b;q:x%3Ay%3By%3Az", { separator : ";", eq : ":" });
+f.q = qs.parse(f.q, { separator : ";", eq : ":" });
 assert.deepEqual(f, { a : "b", q : { x : "y", y : "z" } });
 
 
@@ -96,7 +96,7 @@ qsTestCases.forEach(function (testCase) {
 });
 
 qsColonTestCases.forEach(function (testCase) {
-  assert.equal(testCase[1], qs.stringify(testCase[2], ";", ":"));
+  assert.equal(testCase[1], qs.stringify(testCase[2], { separator : ";", eq : ":" }));
 });
 
 qsWeirdObjects.forEach(function (testCase) {
@@ -119,8 +119,8 @@ var f = qs.stringify({
   q : qs.stringify({
     x : "y",
     y : "z"
-  }, ";", ":")
-}, ";", ":");
+  }, { separator : ";", eq : ":" })
+}, { separator : ";", eq : ":" });
 assert.equal(f, "a:b;q:x%3Ay%3By%3Az");
 
 require("sys").puts("ok");

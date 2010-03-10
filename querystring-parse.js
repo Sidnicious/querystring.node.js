@@ -42,9 +42,10 @@ exports.parse = querystring_parse;
  * @for querystring
  * @static
  */
-function querystring_parse (qs, sep, eq, unesc) {
-  return qs.split(sep || "&")
-    .map(pieceParser(eq || "=", unesc || unescape))
+function querystring_parse (qs, opts) {
+  opts = opts || {};
+  return qs.split(opts.separator || "&")
+    .map(pieceParser(opts))
     .reduce(mergeParams, {});
 };
 
@@ -62,7 +63,8 @@ function unescape (s) {
 // return parse(foo[bar], [{bla:"baz"}])
 // return parse(foo, {bar:[{bla:"baz"}]})
 // return {foo:{bar:[{bla:"baz"}]}}
-function pieceParser (eq, unesc) {
+function pieceParser (opts) {
+  var eq = opts.eq || "=", unesc = opts.unescape || unescape, convertNumerals = opts.numerals !== false;
   return function parsePiece (key, val) {
     if (arguments.length !== 2) {
       // key=val, called from the map/reduce
@@ -76,7 +78,7 @@ function pieceParser (eq, unesc) {
     if (util.isString(val)) {
       val = val.replace(/^\s+|\s+$/g, '');
       // convert numerals to numbers
-      if (!isNaN(val)) {
+      if (convertNumerals && !isNaN(val)) {
         var numVal = +val;
         if (val === numVal.toString(10)) val = numVal;
       }
